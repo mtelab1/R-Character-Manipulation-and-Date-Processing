@@ -1,0 +1,101 @@
+---
+title: 'Data 607: Week 3 Assignment'
+subtitle: 'R Character Manipulation and Date Processing'
+author: "Mustafa Telab"
+date: "9/9/2020"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+```
+```{r, results='hide', message=FALSE}
+library(RCurl)
+library(stringr)
+library(tidyverse)
+```
+
+# #1. 
+Using the 173 majors listed in fivethirtyeight.com’s College Majors dataset [https://fivethirtyeight.com/features/the-economic-guide-to-picking-a-college-major/], provide code that identifies the majors that contain either "DATA" or "STATISTICS"
+
+
+```{r}
+
+getfile <- getURL("https://raw.githubusercontent.com/fivethirtyeight/data/master/college-majors/majors-list.csv") 
+majors <- read.csv(text = getfile)
+data_or_stat <- majors %>%
+  filter(str_detect(Major, "DATA|STATISTICS"))
+print(data_or_stat)
+```
+# #2 
+Write code that transforms the data below:
+
+[1] "bell pepper"  "bilberry"     "blackberry"   "blood orange"
+
+[5] "blueberry"    "cantaloupe"   "chili pepper" "cloudberry"  
+
+[9] "elderberry"   "lime"         "lychee"       "mulberry"    
+
+[13] "olive"        "salal berry"
+
+Into a format like this:
+
+c("bell pepper", "bilberry", "blackberry", "blood orange", "blueberry", "cantaloupe", "chili pepper", "cloudberry", "elderberry", "lime", "lychee", "mulberry", "olive", "salal berry")
+
+```{r}
+needtoclean <-' "bell pepper"  "bilberry"     "blackberry"   "blood orange"
+
+[5] "blueberry"    "cantaloupe"   "chili pepper" "cloudberry"  
+
+[9] "elderberry"   "lime"         "lychee"       "mulberry"    
+
+[13] "olive"        "salal berry" '
+
+cleaned <- needtoclean %>%
+  str_split(boundary("word"))%>%
+  .[[1]]%>%
+  str_subset("[^\\d]")
+
+print(cleaned)
+```
+The two exercises below are taken from R for Data Science, 14.3.5.1 in the on-line version:
+
+# #3 
+Describe, in words, what these expressions will match:
+
+(.)\1\1: The character that directly preceeds \1\1.
+
+"(.)(.)\\2\\1": First character followed by two of the second, followed by the first; all within double quotation ex. "xyyx"
+
+(..)\1: The two characters that directly proceed \1.
+
+"(.).\\1.\\1": First character, followed by any character, then first character, then any character, the first character; all within double quotation.  ex "xyxyx"
+
+"(.)(.)(.).*\\3\\2\\1": First three characters, then anything, ending with the first three characters in reverse order; all within double quotation. ex."xyzaddazyx"
+
+```{r}
+
+```
+# #4 
+Construct regular expressions to match words that:
+
+Start and end with the same character.
+```{r}
+str_view(fruit, "^(.).*\\1$", match = TRUE)
+
+```
+
+Contain a repeated pair of letters (e.g. "church" contains "ch" repeated twice.)
+```{r, message=FALSE, warning=FALSE}
+str_view(fruit, "(.)(.).*\\1\\2", match = TRUE)
+```
+
+Contain one letter repeated in at least three places (e.g. "eleven" contains three "e"s.)
+
+```{r , message=FALSE}
+str_view(fruit, "(.).*\\1.*\\1", match = TRUE)
+```
+
